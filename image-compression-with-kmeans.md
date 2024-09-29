@@ -1,23 +1,25 @@
 # 使用K-means算法进行图像压缩
 
-K-means算法可以将原始图像的连续色彩值量化为有限个离散的代表性颜色值（将像素分成 K 个簇，每个簇代表一种颜色），能够有效地减少图像中的颜色数量，这在一定程度上牺牲了图像的精度,但大大减少了存储空间。
+K-means算法可以将原始图像的连续色彩值量化为有限个离散的代表性颜色值,从而实现图像的颜色量化。这在一定程度上牺牲了图像的精度,但大大减少了存储空间。
+
+## 例1 柯基图像压缩
 
 比如说，下边这张图是包含$1920×1080=2073600$个像素的彩色图像，每个像素由RGB三通道组成，每个通道的取值范围$[0,255]$，即每个通道占$1$个字节，所以每个像素使用$3$字节存储，则原始图像的存储空间约为$6MB$。
 
 ![图1：原始1920×1080图像](data\dog.jpg)
 
-图1：原始1920×1080图像
+<p style="text-align: center;">原始1920×1080图像</p>
 
 我们用K-means算法将这$200$万个像素点的颜色从24位聚类为16个代表性颜色，这样每个像素只需要4位（0.5字节）来表示颜色，总存储空间约为$1MB$，实现了6倍的图像压缩。
 
 <div style="display: flex; justify-content: space-around;">
     <div>
         <img src="data/dog.jpg" alt="图2：原始图像" style="width: 100%;">
-        <p>原始图像</p>
+        <p style="text-align: center;">原始图像</p>
     </div>
     <div>
         <img src="data/compressed_dog_16.jpg" alt="图3：16颜色的图像" style="width: 100%;">
-        <p>16颜色的图像</p>
+        <p style="text-align: center;">16颜色的图像</p>
     </div>
 </div>
 
@@ -26,13 +28,32 @@ K-means算法可以将原始图像的连续色彩值量化为有限个离散的�
 <div style="display: flex; justify-content: space-around;">
     <div>
         <img src="data/dog.jpg" alt="图2：原始图像" style="width: 100%;">
-        <p>原始图像</p>
+        <p style="text-align: center;">原始图像</p>
     </div>
     <div>
         <img src="data/compressed_dog_64.jpg" alt="图3：64颜色的图像" style="width: 100%;">
-        <p>64颜色的图像</p>
+        <p style="text-align: center;">64颜色的图像</p>
     </div>
 </div>
+
+## 例2 鹦鹉图像压缩
+
+<div style="display: flex; justify-content: space-around;">
+    <div>
+        <img src="data/compressed_bird_64.jpg" alt="图2：原始图像" style="width: 100%;">
+        <p style="text-align: center;">64颜色的图像</p>
+    </div>
+    <div>
+        <img src="data/bird.jpg" alt="图2：原始图像" style="width: 100%;">
+        <p style="text-align: center;">原始图像</p>
+    </div>
+    <div>
+        <img src="data/compressed_bird_16.jpg" alt="图3：16颜色的图像" style="width: 100%;">
+        <p style="text-align: center;">16颜色的图像</p>
+    </div>
+</div>
+
+色彩更丰富的话，效果更明显。
 
 ## 代码
 
@@ -46,13 +67,13 @@ import cv2 as cv
 
 ```python
 from sklearn.cluster import KMeans#导入kmeans库
-n_clusters = 16
-model = KMeans(n_clusters=n_clusters)#设置聚类数
+n_clusters = 64
+model = KMeans(n_clusters=n_clusters)#设置聚类数为64
 ```
 
 
 ```python
-I = cv.imread('./data/dog.jpg')
+I = cv.imread('./data/bird.jpg')
 I = cv.cvtColor(I, cv.COLOR_BGR2RGB)
 img = np.asarray(I,dtype=np.float32)/255
 ```
@@ -71,7 +92,7 @@ compressed_img = centroids[pixes].reshape(img.shape)
 ```python
 compressed_img_bgr = (compressed_img * 255).astype(np.uint8)
 compressed_img_bgr = cv.cvtColor(compressed_img_bgr, cv.COLOR_RGB2BGR)
-cv.imwrite(f'./data/compressed_dog_{n_clusters}.jpg', compressed_img_bgr)
+cv.imwrite(f'./data/compressed_bird_{n_clusters}.jpg', compressed_img_bgr)
 ```
 
 ## 优缺点分析
