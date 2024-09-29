@@ -47,7 +47,7 @@ import cv2 as cv
 ```python
 from sklearn.cluster import KMeans#导入kmeans库
 n_clusters = 16
-model = KMeans(n_clusters=n_clusters)#设置聚类数为64
+model = KMeans(n_clusters=n_clusters)#设置聚类数
 ```
 
 
